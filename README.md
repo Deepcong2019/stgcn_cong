@@ -1,5 +1,6 @@
 # 基于Alphapose生成的skeleton point,整理成stgcn需要的的格式（类似kinetics-skeleton），进入stgcn训练<br>
-参考：https://blog.csdn.net/qq_43019451/article/details/118787580
+参考：https://blog.csdn.net/qq_43019451/article/details/118787580<br>
+注意：需要对pose数据归一化，在feeder_kinetics.py中121行有中心化的操作。<br>
 1、修改tools\kinetics_gendata.py中：
 
 
@@ -56,7 +57,7 @@
     train_feeder_args:
       random_choose: True
       random_move: True
-      window_size: 150
+      window_size: 150 # The length of the output sequence
       data_path: ./data/KTH/kinetics-skeleton/train_data.npy
       label_path: ./data/KTH/kinetics-skeleton/train_label.pkl
     test_feeder_args:
