@@ -69,7 +69,7 @@ class Feeder_kinetics(torch.utils.data.Dataset):
             label_info = json.load(f)
 
         sample_id = [name.split('.json')[0] for name in self.sample_name]
-        print("sample_id", sample_id)
+        # print("sample_id", sample_id)
         self.label = np.array(
             [label_info[id]['label_index'] for id in sample_id])
         has_skeleton = np.array(
@@ -112,9 +112,10 @@ class Feeder_kinetics(torch.utils.data.Dataset):
                 if m >= self.num_person_in:
                     break
                 pose = skeleton_info['pose']
+                # print('pose:', pose)
                 score = skeleton_info['score']
-                data_numpy[0, frame_index, :, m] = pose[0::2]
-                data_numpy[1, frame_index, :, m] = pose[1::2]
+                data_numpy[0, frame_index, :, m] = pose[0::2]  # 取奇数位
+                data_numpy[1, frame_index, :, m] = pose[1::2]  # 取出偶数位置的元素
                 data_numpy[2, frame_index, :, m] = score
 
         # centralization
@@ -139,14 +140,12 @@ class Feeder_kinetics(torch.utils.data.Dataset):
         # sort by score
         sort_index = (-data_numpy[2, :, :, :].sum(axis=1)).argsort(axis=1)
         for t, s in enumerate(sort_index):
-            data_numpy[:, t, :, :] = data_numpy[:, t, :, s].transpose((1, 2,
-                                                                       0))
+            data_numpy[:, t, :, :] = data_numpy[:, t, :, s].transpose((1, 2, 0))
         data_numpy = data_numpy[:, :, :, 0:self.num_person_out]
 
         # match poses between 2 frames
         if self.pose_matching:
             data_numpy = tools.openpose_match(data_numpy)
-
         return data_numpy, label
 
     def top_k(self, score, top_k):

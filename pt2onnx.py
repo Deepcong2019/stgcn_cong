@@ -36,11 +36,11 @@ class Model(nn.Module):
             :math:`M_{in}` is the number of instance in a frame.
     """
 
-    def __init__(self, in_channels=3, num_class=400,
+    def __init__(self, in_channels=3, num_class=7,
                  edge_importance_weighting=True, **kwargs):
         super().__init__()
         # load graph
-        self.graph = Graph(layout='openpose', strategy='spatial', )
+        self.graph = Graph(layout='my_pose', strategy='spatial', )
         A = torch.tensor(self.graph.A, dtype=torch.float32, requires_grad=False)
         self.register_buffer('A', A)  # 寄存器变量访问快
         # build networks
@@ -85,9 +85,9 @@ class Model(nn.Module):
         for gcn, importance in zip(self.st_gcn_networks, self.edge_importance):
             x, _ = gcn(x, self.A * importance)
         # global pooling
-        # print('x.size()[2:]', x.size()[2:])
+        print('x.size()[2:]', x.size()[2:])
         # x = F.avg_pool2d(x, x.size()[2:])
-        x = F.avg_pool2d(x, torch.Size([75, 18]))
+        x = F.avg_pool2d(x, torch.Size([75, 26]))
         x = x.view(N, M, -1, 1, 1).mean(dim=1)
         # prediction
         x = self.fcn(x)
@@ -185,9 +185,9 @@ class st_gcn(nn.Module):
 
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 model = Model()
-model.load_state_dict(torch.load('work_dir/recognition/kinetics_skeleton/ST_GCN/st_gcn.kinetics.pt'))
+model.load_state_dict(torch.load('work_dir/recognition/kinetics_skeleton/ST_GCN/epoch480_model.pt'))
 model.eval().to(device)
-x = torch.randn(1, 3, 300, 18, 2).to(device)
+x = torch.randn(1, 3, 300, 26, 1).to(device)
 y = model(x)
 print('shape_y:', y.shape)
 

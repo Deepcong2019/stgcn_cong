@@ -43,7 +43,7 @@ def gendata(
         label_path=label_path,
         num_person_in=num_person_in,
         num_person_out=num_person_out,
-        window_size=max_frame)
+        window_size=300)
 
     sample_name = feeder.sample_name
     sample_label = []
@@ -56,6 +56,7 @@ def gendata(
 
     for i, s in enumerate(sample_name):
         data, label = feeder[i]
+        print("data.shape:", data.shape)
         print_toolbar(i * 1.0 / len(sample_name),
                       '({:>5}/{:<5}) Processing data: '.format(
                           i + 1, len(sample_name)))
@@ -70,9 +71,9 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description='Kinetics-skeleton Data Converter.')
     parser.add_argument(
-        '--data_path', default='data/KTH/kinetics-skeleton')
+        '--data_path', default='D:\\st-gcn\\data\\night\\kinetics-skeleton')
     parser.add_argument(
-        '--out_folder', default='data/KTH/kinetics-skeleton')
+        '--out_folder', default='D:\\st-gcn\\data\\night\\kinetics-skeleton')
     arg = parser.parse_args()
 
     part = ['train', 'val']
