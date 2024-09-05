@@ -26,7 +26,7 @@ class Model(nn.Module):
             :math:`V_{in}` is the number of graph nodes,
             :math:`M_{in}` is the number of instance in a frame.
     """
-    def __init__(self, in_channels=3, num_class=19,
+    def __init__(self, in_channels=3, num_class=3,
                  edge_importance_weighting=True, **kwargs):
         super().__init__()
         # load graph
@@ -167,14 +167,14 @@ class st_gcn(nn.Module):
 
 if __name__ == '__main__':
     # set params
-    weights_path = 'D:\\st-gcn\\work_dir\\recognition\\kinetics_skeleton\\ST_GCN\\epoch500_model.pt'
+    weights_path = 'D:\\st-gcn\\work_dir\\recognition\\kinetics_skeleton\\ST_GCN\\epoch25_model.pt'
     # label_list = ['standing', 'walking', 'laying']
     label_list = []
-    with open('D:\\st-gcn\\resource\\kinetics_skeleton\\label_name_night.txt', 'r', encoding='utf-8') as f:
+    with open('D:\\st-gcn\\resource\\kinetics_skeleton\\label_name_abc.txt', 'r', encoding='utf-8') as f:
         for line in f:
             label_list.append(line.strip('\n'))
-    data_path = "D:\\st-gcn\\data\\night\\kinetics-skeleton\\val_data.npy"
-    label_path = "D:\\st-gcn\\data\\night\\kinetics-skeleton\\val_label.pkl"
+    data_path = "D:\\st-gcn\\data\\abc\\kinetics-skeleton\\val_data.npy"
+    label_path = "D:\\st-gcn\\data\\abc\\kinetics-skeleton\\val_label.pkl"
 
     model = Model().to('cuda:0')
     weights = torch.load(weights_path)
